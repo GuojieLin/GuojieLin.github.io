@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="背景原来日志存储到本地文件，主要为以下几种方式： 批量：  大多以模块拆分目录，送盘入库文件名为日志名，区分不同批次，便于人工查找。通过StringBuilder保存某次的日志处理完成后同步一次写入日志，避免每次写文件的性能损耗，但是是同步保存日志。  单笔：  以业务类型拆分目录，通过Xsearch等工具搜索流水号进行查找，或者通过流水号查找会话id进行查找。通过StringBuilder保存某">
+<meta name="keywords" content="日志,格式规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日志格式设计V0.3">
+<meta property="og:url" content="http://yoursite.com/2019/03/04/日志格式设计V0.3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="背景原来日志存储到本地文件，主要为以下几种方式： 批量：  大多以模块拆分目录，送盘入库文件名为日志名，区分不同批次，便于人工查找。通过StringBuilder保存某次的日志处理完成后同步一次写入日志，避免每次写文件的性能损耗，但是是同步保存日志。  单笔：  以业务类型拆分目录，通过Xsearch等工具搜索流水号进行查找，或者通过流水号查找会话id进行查找。通过StringBuilder保存某">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145444130-1957303063.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145233911-400734701.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145103773-1786118938.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213150252490-1367409030.png">
+<meta property="og:updated_time" content="2019-04-04T08:35:31.180Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="日志格式设计V0.3">
+<meta name="twitter:description" content="背景原来日志存储到本地文件，主要为以下几种方式： 批量：  大多以模块拆分目录，送盘入库文件名为日志名，区分不同批次，便于人工查找。通过StringBuilder保存某次的日志处理完成后同步一次写入日志，避免每次写文件的性能损耗，但是是同步保存日志。  单笔：  以业务类型拆分目录，通过Xsearch等工具搜索流水号进行查找，或者通过流水号查找会话id进行查找。通过StringBuilder保存某">
+<meta name="twitter:image" content="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145444130-1957303063.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/03/04/日志格式设计V0.3/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>日志格式设计V0.3 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">4</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">8</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+  
+  
+
+  
+
+  <a href="https://github.com/GuojieLin" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" style="fill: #222; color: #fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+    <div class="reading-progress-bar"></div>
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/日志格式设计V0.3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jake">
+      <meta itemprop="description" content="融汇博客系统">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">日志格式设计V0.3
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-04 14:22:00" itemprop="dateCreated datePublished" datetime="2019-03-04T14:22:00+08:00">2019-03-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-04 16:35:31" itemprop="dateModified" datetime="2019-04-04T16:35:31+08:00">2019-04-04</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/基础设施/" itemprop="url" rel="index"><span itemprop="name">基础设施</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/03/04/日志格式设计V0.3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/04/日志格式设计V0.3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>原来日志存储到本地文件，主要为以下几种方式：</p>
+<p>批量：<br><img src="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145444130-1957303063.png" alt="20190213145444.png"></p>
+<blockquote>
+<p>大多以模块拆分目录，送盘入库文件名为日志名，区分不同批次，便于人工查找。<br>通过StringBuilder保存某次的日志处理完成后同步一次写入日志，避免每次写文件的性能损耗，但是是同步保存日志。</p>
+</blockquote>
+<p>单笔：<br><img src="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145233911-400734701.png" alt="20190213145233.png"></p>
+<blockquote>
+<p>以业务类型拆分目录，通过Xsearch等工具搜索流水号进行查找，或者通过流水号查找会话id进行查找。<br>通过StringBuilder保存某次会话线程连续执行的日志，执行完异步保存一次，避免每次写文件的性能损耗。</p>
+</blockquote>
+<p>FTP2:<br><img src="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145103773-1786118938.png" alt="20190213145104.png"></p>
+<blockquote>
+<p>以模块拆分目录，时间戳+GUID防止日志名重复，通过批次号或流水号信息进行查找会话id，然后在通过会话id进行查询。<br>通过StringBuilder保存某次会话线程连续执行的日志，执行完保存一次，避免每次写文件的性能损耗。</p>
+</blockquote>
+<p>同步程序：<br><img src="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213150252490-1367409030.png" alt="20190213150252.png"></p>
+<blockquote>
+<p>通过关键词查找到日志前面的日志id，通过日志id搜索肉眼查看日志。<br>每条日志直接写入队列，日志线程异步写入硬盘。</p>
+</blockquote>
+<p>批量，单笔，FTP2等程序每次日志写入通过约定的分隔符分隔日志，同步程序以异步的方式记录日志方式，通过日志id区分日志。</p>
+<p>综上所述，我们原来的日志都是记录下来即可，并没有考虑如何统计，如何便于查找。且很多程序没有公共的日志模块，记录的格式风格都有所不同。</p>
+<p>查找日志流程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    根据险企号查找在哪台服务器--&gt;到程序目录</span><br><span class="line">    到程序目录--&gt;到模块目录指定日期下</span><br><span class="line">    到模块目录指定日期下--&gt; 根据流水号查找</span><br></pre></td></tr></table></figure>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><ol>
+<li>日志或汇总异步保存或汇总同步保存，甚至逐条同步保存，实时性较低，且可能存在磁盘性能对程序处理速度造成负面影响。</li>
+<li>日志格式凌乱，且没有格式化。造成无法统一解析并分析。</li>
+<li>日志散落在各个服务器，无法汇总查看，查询较麻烦。</li>
+<li>日志汇总保存存在以下情况，异步发送到系统B，保存一次日志，B系统响应后处理完成再保存，这中间需要人为清理日志。增加不必要的代码，增加了代码复杂性。可能存在日志没有即使记录的问题造成不知道是日志没记录还是代码执行到哪个逻辑卡住，检查问题造成了不必要的麻烦。</li>
+</ol>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><ol>
+<li>日志格式统一并结构化。</li>
+<li>日志可汇总收集。</li>
+<li>日志异步记录，简化日志代码逻辑。</li>
+</ol>
+<h2 id="解决了什么问题"><a href="#解决了什么问题" class="headerlink" title="解决了什么问题"></a>解决了什么问题</h2><ol>
+<li>通过日志格式化后，可以通过界面化工具进行筛选查找。</li>
+<li>日志汇总收集后，查询日志无需跑到各个服务器上单独查找。且同一笔流水号或批次散落在不同服务器的日志也可以一次性筛选出来，方便日志分析。</li>
+<li>通过格式化的日志可以更容易的进行性能分析，且将性能分析与具体程序业务逻辑解耦。</li>
+</ol>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    NLog--&gt;文件</span><br><span class="line">    NLog--&gt;数据库</span><br><span class="line">    文件--&gt;Log2View</span><br><span class="line">    数据库--&gt;Log2View</span><br><span class="line">    NLog--tcp/udp--&gt;Log2View</span><br><span class="line">    NLog--其他--&gt;Log2View</span><br></pre></td></tr></table></figure>
+<ol>
+<li>通过Nlog开源日志模块记录日志。(也可以是其他的如Log4Net、Serilog等日志模块)</li>
+<li>将日志保存到文件、数据库或者通过网络传输汇总收集日志。</li>
+<li>通过Log2View等(也可以是其他工具，或自行开发的工具)界面工具对结构化日志进行解析并展示。</li>
+</ol>
+<blockquote>
+<p>经过测试发现通过tcp/udp发送到log2view，log4view直接显示的会偏少，可能是log4view本身接收处理有队列上西安（但是却没有配置），或者是其他原因。<br>经测试发现log4view读取数据库部分列不能显示，应该是log4view本身功能上的问题，或其他原因。</p>
+</blockquote>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>结合我们当前的业务模型，逻辑上将日志分为3个维度。网络层日志、服务层日志、业务日志。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“网络层”日志</td>
+<td>这里所说的网络层日志并不是传统意义上的网络协议中的网络层，而是应用层对网络流的读写以及编码解码所作的工作。归并为“网络层”日志。</td>
+</tr>
+<tr>
+<td>服务层日志</td>
+<td>在“网络层”微服务调用的路由日志，该日志与“网路层”日志和业务日志区分。只含有服务、会话id等信息，而不包含业务的相关信息。</td>
+</tr>
+<tr>
+<td>业务日志</td>
+<td>业务逻辑处理的日志，包含业务上的流水号，以及业务处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>不同维度记录的日志字段不同。</p>
+</blockquote>
+<h2 id="字段"><a href="#字段" class="headerlink" title="字段"></a>字段</h2><h3 id="“网络层”日志"><a href="#“网络层”日志" class="headerlink" title="“网络层”日志"></a>“网络层”日志</h3><table>
+<thead>
+<tr>
+<th>参数英文名</th>
+<th>参数中文名</th>
+<th>参数说明</th>
+<th>是否可空</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td>时间</td>
+<td>日志的记录时间</td>
+<td>否</td>
+</tr>
+<tr>
+<td>LogLevel</td>
+<td>日志等级</td>
+<td>当前日志的等级</td>
+<td>否</td>
+</tr>
+<tr>
+<td>AppId</td>
+<td>程序id</td>
+<td>当前日志所在程序的唯一id，日志汇总时方便查找</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Logger</td>
+<td>日志名</td>
+<td>可以是类名，也可以是自定义的一个名字，可用于筛选哪个模块的日志</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>请求身份码</td>
+<td>每个连接有一个唯一的身份码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>RequestId</td>
+<td>会话ID</td>
+<td>本次请求的唯一会话Id</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>日志内容</td>
+<td>记录下来的日志内容</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Exception</td>
+<td>异常信息</td>
+<td>出现异常时代码调用的异常信息，包括堆栈信息，只有异常时才有</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>AppId<br>AppId为当前程序的程序唯一id，AppId可以确定为唯一的一个程序，以及该程序所在地址的信息。需要有个地方能为每个程序注册唯一id。<br>本地文件存储不需要记录AppId,通过网络发送或数据库存储需要记录Appid便于筛选。</li>
+<li>Identity<br>当接收到一个客户端请求时，立即生成一个唯一的identity。通过identity能够确认到某一条连接。若为短链接，则每个会话都会有唯一的一个identity，若为长连接，同一条连接的Identity不会改变。因此identity用于区分哪条连接。</li>
+</ol>
+<blockquote>
+<p>为了方便查找问题，每一条解析出来的报文都记录接收到的内容。</p>
+</blockquote>
+<h3 id="服务层日志"><a href="#服务层日志" class="headerlink" title="服务层日志"></a>服务层日志</h3><table>
+<thead>
+<tr>
+<th>参数英文名</th>
+<th>参数中文名</th>
+<th>参数说明</th>
+<th>是否可空</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td>时间</td>
+<td>日志的记录时间</td>
+<td>否</td>
+</tr>
+<tr>
+<td>LogLevel</td>
+<td>日志等级</td>
+<td>当前日志的等级</td>
+<td>否</td>
+</tr>
+<tr>
+<td>AppId</td>
+<td>程序id</td>
+<td>当前日志所在程序的唯一id，日志汇总时方便查找</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>请求身份码</td>
+<td>每个连接有一个唯一的身份码</td>
+<td>否</td>
+</tr>
+<tr>
+<td>SourceId</td>
+<td>源会话ID</td>
+<td>原始请求的唯一会话Id,可用于关联原始请求的id，即来源id</td>
+<td>是</td>
+</tr>
+<tr>
+<td>RequestId</td>
+<td>会话ID</td>
+<td>本次请求的唯一会话Id</td>
+<td>否</td>
+</tr>
+<tr>
+<td>SourceServiceName</td>
+<td>原始服务名</td>
+<td>通过服务名决定服务的分配</td>
+<td>否</td>
+</tr>
+<tr>
+<td>SourceServiceId</td>
+<td>原始服务Id</td>
+<td>原始服务Id</td>
+<td>否</td>
+</tr>
+<tr>
+<td>TargetServiceName</td>
+<td>目标服务名</td>
+<td>通过服务名决定服务的分配</td>
+<td>否</td>
+</tr>
+<tr>
+<td>TargetServiceId</td>
+<td>目标服务Id</td>
+<td>目标服务Id</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>日志内容</td>
+<td>记录下来的日志内容</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Exception</td>
+<td>异常信息</td>
+<td>出现异常时代码调用的异常信息，包括堆栈信息，只有异常时才有</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Logger</td>
+<td>日志名</td>
+<td>可以是类名，也可以是自定义的一个名字，可用于筛选哪个模块的日志</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>SourceServiceId和TargetServiceId<br>服务id为每个服务在向服务中心注册的时候有会有一个唯一id。因此通过服务id就能确认到唯一的服务。通过服务id能够查找服务名，服务地址等信息。目前暂无服务id。</li>
+<li>SourceServiceName和TargetServiceName<br>服务名为服务的标识，通过服务名进行服务的分配，目前通过配置文件的方式决定本地服务和远程服务，以及远程服务分发到地址。</li>
+<li>SourceId<br>可以通过<code>SourceId</code>关联到整条服务链。</li>
+<li>RequestId<br>通过<code>RequestId</code>用于查找本次服务会话。</li>
+</ol>
+<h3 id="业务层日志"><a href="#业务层日志" class="headerlink" title="业务层日志"></a>业务层日志</h3><table>
+<thead>
+<tr>
+<th>参数英文名</th>
+<th>参数中文名</th>
+<th>参数说明</th>
+<th>是否可空</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td>时间</td>
+<td>日志的记录时间</td>
+<td>否</td>
+</tr>
+<tr>
+<td>LogLevel</td>
+<td>日志等级</td>
+<td>当前日志的等级</td>
+<td>否</td>
+</tr>
+<tr>
+<td>AppId</td>
+<td>程序id</td>
+<td>当前日志所在程序的唯一id，日志汇总时方便查找</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Logger</td>
+<td>日志名</td>
+<td>可以是类名，也可以是自定义的一个名字，可用于筛选哪个模块的日志</td>
+<td>否</td>
+</tr>
+<tr>
+<td>SourceId</td>
+<td>源会话ID</td>
+<td>原始请求的唯一会话Id,可用于关联原始请求的id，即来源id</td>
+<td>是</td>
+</tr>
+<tr>
+<td>RequestId</td>
+<td>会话ID</td>
+<td>本次请求的唯一会话Id</td>
+<td>否</td>
+</tr>
+<tr>
+<td>UniqueNo</td>
+<td>唯一编号</td>
+<td>业务需要用到的唯一编号，比如批次号或流水号等</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>日志内容</td>
+<td>记录下来的日志内容</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Exception</td>
+<td>异常信息</td>
+<td>出现异常时代码调用的异常信息，包括堆栈信息，只有异常时才有</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Logger<br>可用于业务的分类，不同的业务日志存储到不同文件夹中。若通过网络统一收集，则可以通过<code>Logger</code>用于筛选。</li>
+<li>UniqueNo<br>存放业务上的唯一编号，比如批次号或流水号，通过批次号和流水号查找会话id，通过会话id关联某次会话请求，通过源会话id关联某次会话请求的完整处理流程。</li>
+<li>对于单笔业务目前不会关联上一个节点(前置机)的请求。没有<code>SourceId</code>，只有当前的会话id<code>RequestId</code>。</li>
+</ol>
+<h3 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h3><p>其他可选参数，便于筛选日志。</p>
+<table>
+<thead>
+<tr>
+<th>参数英文名</th>
+<th>参数中文名</th>
+<th>参数说明</th>
+<th>是否可空</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source</td>
+<td>来源</td>
+<td>来源ip地址</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Assembly</td>
+<td>程序集</td>
+<td>日志调用所在程序集</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Class</td>
+<td>类</td>
+<td>日志所在类</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>方法</td>
+<td>日志所在方法</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h2 id="日志等级定义"><a href="#日志等级定义" class="headerlink" title="日志等级定义"></a>日志等级定义</h2><p>什么样的日志归属于什么样的等级，需要明确的定义。</p>
+<h3 id="Trace"><a href="#Trace" class="headerlink" title="Trace"></a>Trace</h3><p>trace是最低一级的等级。包含有最详细的日志。在大多数情况下这种日志不需要使用。但是在关键节点的日志分析上起到了决定性作用。<br>包括了每个可能出现问题的步骤点的日志。该日志量太大，因此用于实时查看日志用，避免持久化。</p>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h3><p>比Info更为详细的日志，甚至包括一些逻辑性判断结果，关键数据记录等，主要是用于开发或运维人员分析问题用。</p>
+<h3 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h3><p>正常业务逻辑日志，只需要记录关键性步骤，日志量不会很大，但是能体现主体流程信息。</p>
+<h3 id="Warn"><a href="#Warn" class="headerlink" title="Warn"></a>Warn</h3><p>在预期内可能会出现的错误，一般是在<code>catch</code>代码块中捕获且可能发生的异常。但是不影响业务处理，且即使忽略也不会造成影响的日志信息。主要是用于人工排查错误时看的异常日志。</p>
+<h3 id="Error"><a href="#Error" class="headerlink" title="Error"></a>Error</h3><p>未在预期内出现的错误，一般是在<code>catch</code>代码块中捕获且不希望发生或不在预期内的异常。但是不会造成整个程序甚至服务器收到影响的错误。</p>
+<h3 id="Fatal"><a href="#Fatal" class="headerlink" title="Fatal"></a>Fatal</h3><p>fatal是致命的错误，可以导致程序挂掉，更为严重甚至会影响整个服务器。理论上程序需要直接挂掉而避免导致服务器收到影响。</p>
+<ol>
+<li>线程执行中未捕获的异常。<br>这些异常会导致异常向外抛出造成程序崩溃，可以通过记录在windows日志中，在程序中如果可以直接记录更为直观。</li>
+<li>OOM等异常。出现OutOfMemoryException异常时，表示内存满了或其他原因造成内存溢出的严重错误。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.jpg" alt="Jake 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="Jake 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/日志/" rel="tag"># 日志</a>
+          
+            <a href="/tags/格式规范/" rel="tag"># 格式规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/03/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/05/系统架构V0.3/" rel="prev" title="系统架构0.3">
+                系统架构0.3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Jake">
+            
+              <p class="site-author-name" itemprop="name">Jake</p>
+              <div class="site-description motion-element" itemprop="description">融汇博客系统</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/GuojieLin" title="GitHub &rarr; https://github.com/GuojieLin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.cnblogs.com/Jack-Blog/" title="Cnblogs &rarr; https://www.cnblogs.com/Jack-Blog/" rel="noopener" target="_blank"><i class="fa fa-fw fa-cnblog"></i>Cnblogs</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在的问题"><span class="nav-number">2.</span> <span class="nav-text">存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目的"><span class="nav-number">3.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决了什么问题"><span class="nav-number">4.</span> <span class="nav-text">解决了什么问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名词解释"><span class="nav-number">6.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段"><span class="nav-number">7.</span> <span class="nav-text">字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#“网络层”日志"><span class="nav-number">7.1.</span> <span class="nav-text">“网络层”日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务层日志"><span class="nav-number">7.2.</span> <span class="nav-text">服务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#业务层日志"><span class="nav-number">7.3.</span> <span class="nav-text">业务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他参数"><span class="nav-number">7.4.</span> <span class="nav-text">其他参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志等级定义"><span class="nav-number">8.</span> <span class="nav-text">日志等级定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Trace"><span class="nav-number">8.1.</span> <span class="nav-text">Trace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debug"><span class="nav-number">8.2.</span> <span class="nav-text">Debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Info"><span class="nav-number">8.3.</span> <span class="nav-text">Info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warn"><span class="nav-number">8.4.</span> <span class="nav-text">Warn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Error"><span class="nav-number">8.5.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fatal"><span class="nav-number">8.6.</span> <span class="nav-text">Fatal</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jake</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-reading-progress@1/reading_progress.min.js"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.1"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+  <script src="/js/src/js.cookie.js?v=7.0.1"></script>
+  <script src="/js/src/scroll-cookie.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'nij6YsJ4Mzy2byh1qHAPnf8Q-gzGzoHsz',
+    appKey: 'TTyU0kh4o4fkpcfi5UMPaHyD',
+    placeholder: '说点什么吧...',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
