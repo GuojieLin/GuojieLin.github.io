@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>测试</title>
+      <link href="/2019/04/05/%E6%B5%8B%E8%AF%95/"/>
+      <url>/2019/04/05/%E6%B5%8B%E8%AF%95/</url>
+      
+        <content type="html"><![CDATA[<p>发布到git</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> publish </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> publish </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>powershell使用winrm远程调用</title>
       <link href="/2019/03/21/powershell%E4%BD%BF%E7%94%A8winrm%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8/"/>
       <url>/2019/03/21/powershell%E4%BD%BF%E7%94%A8winrm%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8/</url>
