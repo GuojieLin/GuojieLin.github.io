@@ -261,7 +261,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">13</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
 
   </li>
         
@@ -280,7 +280,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
 
   </li>
         
@@ -516,8 +516,8 @@
       
 
       
-        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>winrm是windows一种方便远程管理的服务。</p>
-<h1 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h1><ol>
+        <h1><span id="介绍">介绍</span></h1><p>winrm是windows一种方便远程管理的服务。</p>
+<h1><span id="服务端配置">服务端配置</span></h1><ol>
 <li><p>快速配置<br><code>winrm quickconfig</code></p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\Administrator&gt; winrm quickconfig</span><br><span class="line">在此计算机上，WinRM 已设置为接收请求。</span><br><span class="line">WinRM 没有设置成为了管理此计算机而允许对其进行远程访问。</span><br><span class="line">必须进行以下更改:</span><br><span class="line"></span><br><span class="line">在 HTTP://* 上创建 WinRM 侦听程序接受 WS-Man 对此机器上任意 IP 的请求</span><br><span class="line">启用 WinRM 防火墙异常。</span><br><span class="line">配置 LocalAccountTokenFilterPolicy 以远程向本地用户授予管理权限。</span><br><span class="line"></span><br><span class="line">进行这些更改吗[y/n]? y</span><br><span class="line"></span><br><span class="line">WinRM 已经进行了更新，以用于远程管理。</span><br><span class="line"></span><br><span class="line">在 HTTP://* 上创建 WinRM 侦听程序接受 WS-Man 对此机器上任意 IP 的请求</span><br><span class="line">WinRM 防火墙异常已启用。</span><br><span class="line">已配置 LocalAccountTokenFilterPolicy 以远程向本地用户授予管理权限。</span><br></pre></td></tr></table></figure>
 </li>
@@ -533,7 +533,7 @@
 <li><p>设置信用地址<br> <code>winrm set winrm/config/client @{TrustedHosts=&quot;host1, host2, host3&quot;}</code><br> <code>Set-Item wsman:\localhost\client\trustedhosts *</code></p>
 </li>
 </ol>
-<h1 id="客户端远程调用"><a href="#客户端远程调用" class="headerlink" title="客户端远程调用"></a>客户端远程调用</h1><ol>
+<h1><span id="客户端远程调用">客户端远程调用</span></h1><ol>
 <li>远程调用</li>
 </ol>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$account</span> = <span class="string">"administrator"</span></span><br><span class="line"><span class="variable">$password</span> = <span class="string">'test1'</span></span><br><span class="line"><span class="variable">$secpwd</span> = <span class="built_in">convertto-securestring</span> <span class="variable">$password</span> -asplaintext -force</span><br><span class="line"><span class="variable">$cred</span> = <span class="built_in">new-object</span> System.Management.Automation.PSCredential -argumentlist <span class="variable">$account</span>,<span class="variable">$secpwd</span></span><br><span class="line"><span class="built_in">invoke-command</span> -computername <span class="number">10.60</span>.<span class="number">45.239</span> -Credential <span class="variable">$cred</span>  -command &#123;d:helloworld.ps1&#125;</span><br></pre></td></tr></table></figure>
@@ -730,10 +730,6 @@
                     
                       
                     
-                      
-                    
-                      
-                    
                     <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
@@ -750,8 +746,6 @@
                     
                   
                     
-                    
-                      
                     
                       
                     
@@ -841,7 +835,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务端配置"><span class="nav-number">2.</span> <span class="nav-text">服务端配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端远程调用"><span class="nav-number">3.</span> <span class="nav-text">客户端远程调用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">服务端配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">客户端远程调用</span></a></li></ol></div>
             
 
           </div>
