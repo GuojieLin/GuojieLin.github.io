@@ -261,7 +261,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">10</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">13</span></a>
 
   </li>
         
@@ -280,7 +280,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">6</span></a>
 
   </li>
         
@@ -389,7 +389,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://guojielin.github.io/2019/04/05/测试/">
+    <link itemprop="mainEntityOfPage" href="https://guojielin.github.io/2019/04/08/测试/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jake">
@@ -409,7 +409,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/04/05/测试/" class="post-title-link" itemprop="url">测试</a>
+                <a href="/2019/04/08/测试/" class="post-title-link" itemprop="url">测试环境发布规范V0.1</a>
               
             
           </h1>
@@ -434,7 +434,7 @@
                 
               
 
-              <time title="创建时间：2019-04-05 01:41:00 / 修改时间：01:43:03" itemprop="dateCreated datePublished" datetime="2019-04-05T01:41:00+08:00">2019-04-05</time>
+              <time title="创建时间：2019-04-08 13:41:00 / 修改时间：14:03:37" itemprop="dateCreated datePublished" datetime="2019-04-08T13:41:00+08:00">2019-04-08</time>
             
 
             
@@ -460,6 +460,13 @@
 
                 
                 
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/publish/规范/" itemprop="url" rel="index"><span itemprop="name">规范</span></a></span>
+
+                
+                
               
             </span>
           
@@ -475,8 +482,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/04/05/测试/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/05/测试/" itemprop="commentCount"></span>
+                <a href="/2019/04/08/测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/08/测试/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -507,14 +514,14 @@
         
           
             <p>
-              发布到git
+              测试graph TD    Start --&gt; Stop
 
               
             </p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/04/05/测试/#more" rel="contents">
+              <a class="btn" href="/2019/04/08/测试/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -2222,7 +2229,9 @@ Quick
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2259,7 +2268,13 @@ Quick
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -2282,7 +2297,7 @@ Quick
                   
                     
                   
-                  <a href="https://github.com/GuojieLin" title="GitHub &rarr; https://github.com/GuojieLin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  <a href="https://guojielin.github.io" title="GitHub &rarr; https://guojielin.github.io"><i class="fa fa-fw fa-github"></i>GitHub</a>
                 </span>
               
                 <span class="links-of-author-item">
@@ -2848,6 +2863,26 @@ Quick
   
 
   
+<script>
+if ($('body').find('pre.mermaid').length) {
+  $.ajax({
+    type: 'GET',
+    url: '//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js',
+    dataType: 'script',
+    cache: true,
+    success: function() {
+      mermaid.initialize({
+        theme: 'forest',
+        logLevel: 3,
+        flowchart: { curve: 'linear' },
+        gantt: { axisFormat: '%m/%d/%Y' },
+        sequence: { actorMargin: 50 }
+      });
+    }
+  });
+}
+</script>
+
 
   
 
