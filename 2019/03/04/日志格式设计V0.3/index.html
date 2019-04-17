@@ -266,7 +266,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">15</span></a>
 
   </li>
         
@@ -285,7 +285,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">8</span></a>
 
   </li>
         
@@ -304,7 +304,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">9</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
 
   </li>
 
@@ -521,7 +521,7 @@
       
 
       
-        <h2><span id="背景">背景</span></h2><p>原来日志存储到本地文件，主要为以下几种方式：</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>原来日志存储到本地文件，主要为以下几种方式：</p>
 <p>批量：<br><img src="https://img2018.cnblogs.com/blog/580757/201902/580757-20190213145444130-1957303063.png" alt="20190213145444.png"></p>
 <blockquote>
 <p>大多以模块拆分目录，送盘入库文件名为日志名，区分不同批次，便于人工查找。<br>通过StringBuilder保存某次的日志处理完成后同步一次写入日志，避免每次写文件的性能损耗，但是是同步保存日志。</p>
@@ -541,35 +541,24 @@
 <p>批量，单笔，FTP2等程序每次日志写入通过约定的分隔符分隔日志，同步程序以异步的方式记录日志方式，通过日志id区分日志。</p>
 <p>综上所述，我们原来的日志都是记录下来即可，并没有考虑如何统计，如何便于查找。且很多程序没有公共的日志模块，记录的格式风格都有所不同。</p>
 <p>查找日志流程</p>
-<pre class="mermaid">graph LR
-    根据险企号查找在哪台服务器-->到程序目录
-    到程序目录-->到模块目录指定日期下
-    到模块目录指定日期下--> 根据流水号查找</pre>
-
-<h2><span id="存在的问题">存在的问题</span></h2><ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    根据险企号查找在哪台服务器--&gt;到程序目录</span><br><span class="line">    到程序目录--&gt;到模块目录指定日期下</span><br><span class="line">    到模块目录指定日期下--&gt; 根据流水号查找</span><br></pre></td></tr></table></figure>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><ol>
 <li>日志或汇总异步保存或汇总同步保存，甚至逐条同步保存，实时性较低，且可能存在磁盘性能对程序处理速度造成负面影响。</li>
 <li>日志格式凌乱，且没有格式化。造成无法统一解析并分析。</li>
 <li>日志散落在各个服务器，无法汇总查看，查询较麻烦。</li>
 <li>日志汇总保存存在以下情况，异步发送到系统B，保存一次日志，B系统响应后处理完成再保存，这中间需要人为清理日志。增加不必要的代码，增加了代码复杂性。可能存在日志没有即使记录的问题造成不知道是日志没记录还是代码执行到哪个逻辑卡住，检查问题造成了不必要的麻烦。</li>
 </ol>
-<h2><span id="目的">目的</span></h2><ol>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><ol>
 <li>日志格式统一并结构化。</li>
 <li>日志可汇总收集。</li>
 <li>日志异步记录，简化日志代码逻辑。</li>
 </ol>
-<h2><span id="解决了什么问题">解决了什么问题</span></h2><ol>
+<h2 id="解决了什么问题"><a href="#解决了什么问题" class="headerlink" title="解决了什么问题"></a>解决了什么问题</h2><ol>
 <li>通过日志格式化后，可以通过界面化工具进行筛选查找。</li>
 <li>日志汇总收集后，查询日志无需跑到各个服务器上单独查找。且同一笔流水号或批次散落在不同服务器的日志也可以一次性筛选出来，方便日志分析。</li>
 <li>通过格式化的日志可以更容易的进行性能分析，且将性能分析与具体程序业务逻辑解耦。</li>
 </ol>
-<h2><span id="解决方案">解决方案</span></h2><pre class="mermaid">graph LR
-    NLog-->文件
-    NLog-->数据库
-    文件-->Log2View
-    数据库-->Log2View
-    NLog--tcp/udp-->Log2View
-    NLog--其他-->Log2View</pre>
-
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    NLog--&gt;文件</span><br><span class="line">    NLog--&gt;数据库</span><br><span class="line">    文件--&gt;Log2View</span><br><span class="line">    数据库--&gt;Log2View</span><br><span class="line">    NLog--tcp/udp--&gt;Log2View</span><br><span class="line">    NLog--其他--&gt;Log2View</span><br></pre></td></tr></table></figure>
 <ol>
 <li>通过Nlog开源日志模块记录日志。(也可以是其他的如Log4Net、Serilog等日志模块)</li>
 <li>将日志保存到文件、数据库或者通过网络传输汇总收集日志。</li>
@@ -578,7 +567,7 @@
 <blockquote>
 <p>经过测试发现通过tcp/udp发送到log2view，log4view直接显示的会偏少，可能是log4view本身接收处理有队列上西安（但是却没有配置），或者是其他原因。<br>经测试发现log4view读取数据库部分列不能显示，应该是log4view本身功能上的问题，或其他原因。</p>
 </blockquote>
-<h2><span id="名词解释">名词解释</span></h2><p>结合我们当前的业务模型，逻辑上将日志分为3个维度。网络层日志、服务层日志、业务日志。</p>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>结合我们当前的业务模型，逻辑上将日志分为3个维度。网络层日志、服务层日志、业务日志。</p>
 <table>
 <thead>
 <tr>
@@ -604,7 +593,7 @@
 <blockquote>
 <p>不同维度记录的日志字段不同。</p>
 </blockquote>
-<h2><span id="字段">字段</span></h2><h3><span id="网络层日志">“网络层”日志</span></h3><table>
+<h2 id="字段"><a href="#字段" class="headerlink" title="字段"></a>字段</h2><h3 id="“网络层”日志"><a href="#“网络层”日志" class="headerlink" title="“网络层”日志"></a>“网络层”日志</h3><table>
 <thead>
 <tr>
 <th>参数英文名</th>
@@ -671,7 +660,7 @@
 <blockquote>
 <p>为了方便查找问题，每一条解析出来的报文都记录接收到的内容。</p>
 </blockquote>
-<h3><span id="服务层日志">服务层日志</span></h3><table>
+<h3 id="服务层日志"><a href="#服务层日志" class="headerlink" title="服务层日志"></a>服务层日志</h3><table>
 <thead>
 <tr>
 <th>参数英文名</th>
@@ -767,7 +756,7 @@
 <li>SourceId<br>可以通过<code>SourceId</code>关联到整条服务链。</li>
 <li>RequestId<br>通过<code>RequestId</code>用于查找本次服务会话。</li>
 </ol>
-<h3><span id="业务层日志">业务层日志</span></h3><table>
+<h3 id="业务层日志"><a href="#业务层日志" class="headerlink" title="业务层日志"></a>业务层日志</h3><table>
 <thead>
 <tr>
 <th>参数英文名</th>
@@ -838,7 +827,7 @@
 <li>UniqueNo<br>存放业务上的唯一编号，比如批次号或流水号，通过批次号和流水号查找会话id，通过会话id关联某次会话请求，通过源会话id关联某次会话请求的完整处理流程。</li>
 <li>对于单笔业务目前不会关联上一个节点(前置机)的请求。没有<code>SourceId</code>，只有当前的会话id<code>RequestId</code>。</li>
 </ol>
-<h3><span id="其他参数">其他参数</span></h3><p>其他可选参数，便于筛选日志。</p>
+<h3 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h3><p>其他可选参数，便于筛选日志。</p>
 <table>
 <thead>
 <tr>
@@ -875,13 +864,13 @@
 </tr>
 </tbody>
 </table>
-<h2><span id="日志等级定义">日志等级定义</span></h2><p>什么样的日志归属于什么样的等级，需要明确的定义。</p>
-<h3><span id="trace">Trace</span></h3><p>trace是最低一级的等级。包含有最详细的日志。在大多数情况下这种日志不需要使用。但是在关键节点的日志分析上起到了决定性作用。<br>包括了每个可能出现问题的步骤点的日志。该日志量太大，因此用于实时查看日志用，避免持久化。</p>
-<h3><span id="debug">Debug</span></h3><p>比Info更为详细的日志，甚至包括一些逻辑性判断结果，关键数据记录等，主要是用于开发或运维人员分析问题用。</p>
-<h3><span id="info">Info</span></h3><p>正常业务逻辑日志，只需要记录关键性步骤，日志量不会很大，但是能体现主体流程信息。</p>
-<h3><span id="warn">Warn</span></h3><p>在预期内可能会出现的错误，一般是在<code>catch</code>代码块中捕获且可能发生的异常。但是不影响业务处理，且即使忽略也不会造成影响的日志信息。主要是用于人工排查错误时看的异常日志。</p>
-<h3><span id="error">Error</span></h3><p>未在预期内出现的错误，一般是在<code>catch</code>代码块中捕获且不希望发生或不在预期内的异常。但是不会造成整个程序甚至服务器收到影响的错误。</p>
-<h3><span id="fatal">Fatal</span></h3><p>fatal是致命的错误，可以导致程序挂掉，更为严重甚至会影响整个服务器。理论上程序需要直接挂掉而避免导致服务器收到影响。</p>
+<h2 id="日志等级定义"><a href="#日志等级定义" class="headerlink" title="日志等级定义"></a>日志等级定义</h2><p>什么样的日志归属于什么样的等级，需要明确的定义。</p>
+<h3 id="Trace"><a href="#Trace" class="headerlink" title="Trace"></a>Trace</h3><p>trace是最低一级的等级。包含有最详细的日志。在大多数情况下这种日志不需要使用。但是在关键节点的日志分析上起到了决定性作用。<br>包括了每个可能出现问题的步骤点的日志。该日志量太大，因此用于实时查看日志用，避免持久化。</p>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h3><p>比Info更为详细的日志，甚至包括一些逻辑性判断结果，关键数据记录等，主要是用于开发或运维人员分析问题用。</p>
+<h3 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h3><p>正常业务逻辑日志，只需要记录关键性步骤，日志量不会很大，但是能体现主体流程信息。</p>
+<h3 id="Warn"><a href="#Warn" class="headerlink" title="Warn"></a>Warn</h3><p>在预期内可能会出现的错误，一般是在<code>catch</code>代码块中捕获且可能发生的异常。但是不影响业务处理，且即使忽略也不会造成影响的日志信息。主要是用于人工排查错误时看的异常日志。</p>
+<h3 id="Error"><a href="#Error" class="headerlink" title="Error"></a>Error</h3><p>未在预期内出现的错误，一般是在<code>catch</code>代码块中捕获且不希望发生或不在预期内的异常。但是不会造成整个程序甚至服务器收到影响的错误。</p>
+<h3 id="Fatal"><a href="#Fatal" class="headerlink" title="Fatal"></a>Fatal</h3><p>fatal是致命的错误，可以导致程序挂掉，更为严重甚至会影响整个服务器。理论上程序需要直接挂掉而避免导致服务器收到影响。</p>
 <ol>
 <li>线程执行中未捕获的异常。<br>这些异常会导致异常向外抛出造成程序崩溃，可以通过记录在windows日志中，在程序中如果可以直接记录更为直观。</li>
 <li>OOM等异常。出现OutOfMemoryException异常时，表示内存满了或其他原因造成内存溢出的严重错误。</li>
@@ -1044,7 +1033,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1071,7 +1060,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1112,7 +1107,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">12</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1176,7 +1177,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">解决了什么问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">7.</span> <span class="nav-text">字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">7.1.</span> <span class="nav-text">“网络层”日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">7.2.</span> <span class="nav-text">服务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">7.3.</span> <span class="nav-text">业务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">7.4.</span> <span class="nav-text">其他参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">8.</span> <span class="nav-text">日志等级定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.1.</span> <span class="nav-text">Trace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.2.</span> <span class="nav-text">Debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.3.</span> <span class="nav-text">Info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.4.</span> <span class="nav-text">Warn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.5.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">8.6.</span> <span class="nav-text">Fatal</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在的问题"><span class="nav-number">2.</span> <span class="nav-text">存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目的"><span class="nav-number">3.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决了什么问题"><span class="nav-number">4.</span> <span class="nav-text">解决了什么问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名词解释"><span class="nav-number">6.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段"><span class="nav-number">7.</span> <span class="nav-text">字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#“网络层”日志"><span class="nav-number">7.1.</span> <span class="nav-text">“网络层”日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务层日志"><span class="nav-number">7.2.</span> <span class="nav-text">服务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#业务层日志"><span class="nav-number">7.3.</span> <span class="nav-text">业务层日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他参数"><span class="nav-number">7.4.</span> <span class="nav-text">其他参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志等级定义"><span class="nav-number">8.</span> <span class="nav-text">日志等级定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Trace"><span class="nav-number">8.1.</span> <span class="nav-text">Trace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debug"><span class="nav-number">8.2.</span> <span class="nav-text">Debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Info"><span class="nav-number">8.3.</span> <span class="nav-text">Info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warn"><span class="nav-number">8.4.</span> <span class="nav-text">Warn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Error"><span class="nav-number">8.5.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fatal"><span class="nav-number">8.6.</span> <span class="nav-text">Fatal</span></a></li></ol></li></ol></div>
             
 
           </div>

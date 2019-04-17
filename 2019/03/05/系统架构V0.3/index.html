@@ -267,7 +267,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">15</span></a>
 
   </li>
         
@@ -286,7 +286,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">8</span></a>
 
   </li>
         
@@ -305,7 +305,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">9</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
 
   </li>
 
@@ -523,10 +523,10 @@
 
       
         <p>[TOC]</p>
-<h1><span id="系统架构">系统架构</span></h1><h2><span id="背景">背景</span></h2><p>随着Internet的快速发展和业务量的不断提高，基于网络的数据访问流量迅速增长，同时许多企业的网站或接口都需要提供<strong>7*24</strong>小时不间断访问，任何服务中断都会直接或间接的造成商业损失，因此企业对于应用服务提出了高性能和高可靠性的要求。随着用户量和数据量的急速递增，传统的单机模式，不但成为性能瓶颈，也会存在单点故障，<strong>系统架构升级</strong>刻不容缓。</p>
-<h2><span id="单机系统">单机系统</span></h2><p>企业对接时，一开始数据量并不大，前端系统和后端服务都只用部署1个即可。</p>
+<h1 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>随着Internet的快速发展和业务量的不断提高，基于网络的数据访问流量迅速增长，同时许多企业的网站或接口都需要提供<strong>7*24</strong>小时不间断访问，任何服务中断都会直接或间接的造成商业损失，因此企业对于应用服务提出了高性能和高可靠性的要求。随着用户量和数据量的急速递增，传统的单机模式，不但成为性能瓶颈，也会存在单点故障，<strong>系统架构升级</strong>刻不容缓。</p>
+<h2 id="单机系统"><a href="#单机系统" class="headerlink" title="单机系统"></a>单机系统</h2><p>企业对接时，一开始数据量并不大，前端系统和后端服务都只用部署1个即可。</p>
 <p><img src="/2019/03/05/系统架构V0.3/2019-03-07-17-58-17.png" alt="2019-03-07-17-58-17.png"></p>
-<h2><span id="冷备">冷备</span></h2><p>一开始只有1个服务没有什么影响，但是随着服务长时间运行，会碰到服务升级，网络不通等情况，就会存在服务长时间无法访问。此时就非常需要添加一个备用服务器。<br>冷备技术，部署备用服务，在2台(或多台)服务器运行的时候，当正在提供服务的这台服务器出现故障后，人工手动切换到另一台服务器，保障系统的可以继续运行服务。</p>
+<h2 id="冷备"><a href="#冷备" class="headerlink" title="冷备"></a>冷备</h2><p>一开始只有1个服务没有什么影响，但是随着服务长时间运行，会碰到服务升级，网络不通等情况，就会存在服务长时间无法访问。此时就非常需要添加一个备用服务器。<br>冷备技术，部署备用服务，在2台(或多台)服务器运行的时候，当正在提供服务的这台服务器出现故障后，人工手动切换到另一台服务器，保障系统的可以继续运行服务。</p>
 <p><img src="/2019/03/05/系统架构V0.3/2019-03-08-11-20-55.png" alt="2019-03-08-11-20-55.png"></p>
 <p>虽然双机冷备能起到临时解决作用，但是服务器切换的时候难免需要人工处理时间，在人工处理时，服务往往是不可用的。<br>一般来说网络服务供应商和客户之前会有一份关于可用性的合同，其衡量标准即为SLA(Service Level Agreement,服务等级协议),该衡量标准同样也适用于企业服务。</p>
 <table>
@@ -571,39 +571,39 @@
 </tbody>
 </table>
 <p>一般来说，我们的观念里一个服务至少要做到99.9%才称为基本上可用，是合格性产品，否则基本很难被别人使用。理论上来说，作为一个正常人类，收到突发报警、能正确的分析出问题所在、找到正确的解决方案、并且<strong>正确实施</strong>的时间极限大概是<strong>两分钟</strong>[^1]。但是对于实际情况，人工处理效率远大于该极限值。一般人工发现问题并找到问题原因，最终到解决问题可能至少要20分钟以上。可以想象的出2个9(99%)、3个(99.9%)是基本可以靠运气搞定的。到3个9可以靠堆人(也就是3班倒之类的强制值班)。但是在信息时代，设备是不值钱的，人力才是真正的资源。为了达到4个9的SLA标准，不得不提到高可用。</p>
-<h2><span id="热备">热备</span></h2><p>热备(高可用)特指基于高可用系统中的两台(或多台)服务器的热备。简单的讲，热备就是一种利用故障点转移的方式来保障业务连续性。其业务的恢复不是在原服务器，而是在备用服务器。热备不具有修复故障服务器的功能，而只是将故障隔离。</p>
+<h2 id="热备"><a href="#热备" class="headerlink" title="热备"></a>热备</h2><p>热备(高可用)特指基于高可用系统中的两台(或多台)服务器的热备。简单的讲，热备就是一种利用故障点转移的方式来保障业务连续性。其业务的恢复不是在原服务器，而是在备用服务器。热备不具有修复故障服务器的功能，而只是将故障隔离。</p>
 <p><img src="/2019/03/05/系统架构V0.3/2019-03-08-11-15-44.png" alt="2019-03-08-11-15-44.png"></p>
 <p>当启用了热备以后，虽然避免了单机故障，但是同时引入了新的问题。前端系统如何决定请求发往哪个后端服务？这时候就要通过负载均衡对请求进行分发。</p>
-<h2><span id="负载均衡">负载均衡</span></h2><p>负载均衡是建立在现有网络结构之上，提供一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。通常负载均衡有两方面的含义。</p>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>负载均衡是建立在现有网络结构之上，提供一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。通常负载均衡有两方面的含义。</p>
 <ol>
 <li>单个重负载的运算分担到多台节点设备上做并行处理，每个节点设备处理结束后，将结果汇总，返回给用户，系统处理能力得到大幅度提高，这就是常说的集群（clustering）技术。</li>
 <li>大量的并发访问或数据流量分担到多台节点设备上分别处理，减少用户等待响应的时间，这主要针对Web服务器、FTP服务器、企业关键应用服务器等网络应用。通常，负载均衡会根据网络的不同层次（网络七层）来划分。目前所用到的负载均衡技术通常在网络协议的的第4层(传输层)或第7层(应用层)处理的。</li>
 </ol>
-<h3><span id="作用">作用</span></h3><ol>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ol>
 <li>解决并发压力，提高应用处理性能。</li>
 <li>提供故障转移，实现高可用。</li>
 <li>通过添加或减少服务器数量，提供网站伸缩性（扩展性）。</li>
 <li>安全防护；（负载均衡设备上做一些过滤，黑白名单等处理）。</li>
 </ol>
-<h3><span id="解决方案">解决方案</span></h3><h4><span id="dns负载均衡">DNS负载均衡</span></h4><p>早期的负载均衡是通过DNS实现的，通过将一个域名指向多个IP，当请求通过DNS服务器，根据指定的负载均衡策略(如随机分配、轮询等算法)返回指定IP。这样做配置简单，扩展性强。但是这种方法有一个很大的缺点就是延时性问题，在做出调度策略改变以后，由于DNS各级节点的缓存并不会及时的在客户端生效，而且DNS负载的调度策略比较简单，无法满足业务需求。</p>
-<h4><span id="硬件负载均衡">硬件负载均衡</span></h4><p>硬件负载均衡器也称为F5，是处于网络协议<strong>传输层</strong>的负载均衡解决方案，是直接在服务器和外部网络间安装负载均衡设备，由于专门的设备完成专门的任务，独立于操作系统，整体性能得到大量提高，加上多样化的负载均衡策略，智能化的流量管理，可达到最佳的负载均衡需求。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="DNS负载均衡"><a href="#DNS负载均衡" class="headerlink" title="DNS负载均衡"></a>DNS负载均衡</h4><p>早期的负载均衡是通过DNS实现的，通过将一个域名指向多个IP，当请求通过DNS服务器，根据指定的负载均衡策略(如随机分配、轮询等算法)返回指定IP。这样做配置简单，扩展性强。但是这种方法有一个很大的缺点就是延时性问题，在做出调度策略改变以后，由于DNS各级节点的缓存并不会及时的在客户端生效，而且DNS负载的调度策略比较简单，无法满足业务需求。</p>
+<h4 id="硬件负载均衡"><a href="#硬件负载均衡" class="headerlink" title="硬件负载均衡"></a>硬件负载均衡</h4><p>硬件负载均衡器也称为F5，是处于网络协议<strong>传输层</strong>的负载均衡解决方案，是直接在服务器和外部网络间安装负载均衡设备，由于专门的设备完成专门的任务，独立于操作系统，整体性能得到大量提高，加上多样化的负载均衡策略，智能化的流量管理，可达到最佳的负载均衡需求。</p>
 <p><img src="/2019/03/05/系统架构V0.3/2019-03-08-11-12-36.png" alt="2019-03-08-11-12-36.png"></p>
 <p>负载均衡器的工作是转发报文，接收到请求时，修改数据包的目标地址，从而将包转发到指定的应用服务器。使用负载均衡器功能和性能都很不错，但是价格比较昂贵，且负载均衡器本身又会变为一个单点。虽然现在主流的负载均衡器也都支持主备容灾功能，但是理论上需要形成1+2(1主2备)才能实现真正的高可用，其中一台挂掉后依然还是1主1备，但是主要还是价格比较昂贵。</p>
-<h4><span id="软件负载均衡">软件负载均衡</span></h4><p>由于硬件负载均衡虽然性能很好，但是非常昂贵，随着负载均衡的负载，基于软件的负载均衡方案脱颖而出，它的有点是费用低廉，实现功能强大。Nginx/LVS/HAProxy是目前使用最广泛的三种负载均衡软件。</p>
-<h5><span id="nginx">Nginx</span></h5><p>Nignx是在应用层上实现的一个基于反向代理的软件。针对Http应用做了分流策略，通过Nginx解析Http头部将请求分发到配置的指定服务器。同时通过简单的配置即可实现后端服务集群配置，通过内置的负载均衡算法将请求分配到指定的服务。Nginx也支持部署集群，可以避免反向代理服务本身存在单点故障。然而Nginx最大的缺点之一就是仅支持HTTP、HTTPS、EMail等协议，适用范围较小。</p>
+<h4 id="软件负载均衡"><a href="#软件负载均衡" class="headerlink" title="软件负载均衡"></a>软件负载均衡</h4><p>由于硬件负载均衡虽然性能很好，但是非常昂贵，随着负载均衡的负载，基于软件的负载均衡方案脱颖而出，它的有点是费用低廉，实现功能强大。Nginx/LVS/HAProxy是目前使用最广泛的三种负载均衡软件。</p>
+<h5 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h5><p>Nignx是在应用层上实现的一个基于反向代理的软件。针对Http应用做了分流策略，通过Nginx解析Http头部将请求分发到配置的指定服务器。同时通过简单的配置即可实现后端服务集群配置，通过内置的负载均衡算法将请求分配到指定的服务。Nginx也支持部署集群，可以避免反向代理服务本身存在单点故障。然而Nginx最大的缺点之一就是仅支持HTTP、HTTPS、EMail等协议，适用范围较小。</p>
 <blockquote>
 <p>反向代理，在接收到前端请求后，根据负载均衡算法分配到其中一个后端地址，然后反向代理软件所在的服务器与后端服务器建立TCP连接。这种方式可以对前端的请求和后端的响应的数据进行任意修改，极大的提升了应用系统在网络层的灵活性。但同时，对性能的要求也增强了。</p>
 </blockquote>
 <p><img src="/2019/03/05/系统架构V0.3/2019-03-08-11-12-03.png" alt="2019-03-08-11-12-03.png"></p>
-<h5><span id="lvs">LVS</span></h5><p>LVS使用Linux内核集群实现一个高性能、高可用的负载均衡服务器，它具有很好的可伸缩性（Scalability)、可靠性（Reliability)和可管理性（Manageability)。LVS有三种模式，分别为NAT(网络地址转换)、TUN(隧道)、DR(直接路由)。</p>
+<h5 id="LVS"><a href="#LVS" class="headerlink" title="LVS"></a>LVS</h5><p>LVS使用Linux内核集群实现一个高性能、高可用的负载均衡服务器，它具有很好的可伸缩性（Scalability)、可靠性（Reliability)和可管理性（Manageability)。LVS有三种模式，分别为NAT(网络地址转换)、TUN(隧道)、DR(直接路由)。</p>
 <ol>
 <li>NAT模式对数据包的IP和端口进行修改并转发。</li>
 <li>TUN模式通过IP隧道(将IP数据报封装到IP数据报中的技术)对IP数据包再次封装并转发。</li>
 <li>DR模式通过对Linux的内核参数进行一定的配置之后，通过修改请求的MAC地址将其转发到指定的后端服务，从而实现转发。</li>
 </ol>
 <p>因为它工作在传输层，因此比Nignx更为高效，也因此它不能和Nginx一样解析应用层数据包做动静分离，相比于Nginx的功能就显得没那么强大。</p>
-<h5><span id="haproxy">HAProxy</span></h5><p>Haproxy是高可用代理软件，它是一种比较流行的开源软件，基于TCP(四层)/HTTP(七层)协议的负载均衡代理解决方案，可以在Linux、FreeBSD等平台下运行，常见于跨多个服务器，比如:web、应用程序、数据库、MQ消息队列、MC数据库等等。通过多个Haproxy服务来提高服务的性能和可靠性。HAProxy基于第四层负载均衡逻辑是通过转发到指定的服务IP和端口，类似于LVS-NAT模式。第七层负载均衡原理和Nginx类似。</p>
-<h3><span id="负载均衡算法">负载均衡算法</span></h3><ol>
+<h5 id="HAProxy"><a href="#HAProxy" class="headerlink" title="HAProxy"></a>HAProxy</h5><p>Haproxy是高可用代理软件，它是一种比较流行的开源软件，基于TCP(四层)/HTTP(七层)协议的负载均衡代理解决方案，可以在Linux、FreeBSD等平台下运行，常见于跨多个服务器，比如:web、应用程序、数据库、MQ消息队列、MC数据库等等。通过多个Haproxy服务来提高服务的性能和可靠性。HAProxy基于第四层负载均衡逻辑是通过转发到指定的服务IP和端口，类似于LVS-NAT模式。第七层负载均衡原理和Nginx类似。</p>
+<h3 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h3><ol>
 <li>轮询法<br>将请求按顺序轮流地分配到后端服务器上，它均衡地对待后端的每一台服务器，而不关心服务器实际的连接数和当前的系统负载。</li>
 <li>随机法<br>通过系统的随机算法，根据后端服务器的列表大小值来随机选取其中的一台服务器进行访问。由概率统计理论可以得知，随着客户端调用服务端的次数增多，<br>其实际效果越来越接近于平均分配调用量到后端的每一台服务器，也就是轮询的结果。</li>
 <li>源地址哈希法<br>源地址哈希的思想是根据获取客户端的IP地址，通过哈希函数计算得到的一个数值，用该数值对服务器列表的大小进行取模运算，得到的结果便是客服端要访问服务器的序号。采用源地址哈希法进行负载均衡，同一IP地址的客户端，当后端服务器列表不变时，它每次都会映射到同一台后端服务器进行访问。</li>
@@ -611,8 +611,8 @@
 <li>加权随机法<br>与加权轮询法一样，加权随机法也根据后端机器的配置，系统的负载分配不同的权重。不同的是，它是按照权重随机请求后端服务器，而非顺序。</li>
 <li>最小连接数法<br>最小连接数算法比较灵活和智能，由于后端服务器的配置不尽相同，对于请求的处理有快有慢，它是根据后端服务器当前的连接情况，动态地选取其中当前<br>积压连接数最少的一台服务器来处理当前的请求，尽可能地提高后端服务的利用效率，将负责合理地分流到每一台服务器。</li>
 </ol>
-<h3><span id="负载均衡容错">负载均衡容错</span></h3><p>负载均衡除了分配服务以外，容错机制也是必不可少的功能。容错机制通过自动侦测、自动切换和自动恢复3个阶段完成。</p>
-<h4><span id="自动侦测">自动侦测</span></h4><p>通过判断服务节点的网络、负载等情况决定服务节点可用性。</p>
+<h3 id="负载均衡容错"><a href="#负载均衡容错" class="headerlink" title="负载均衡容错"></a>负载均衡容错</h3><p>负载均衡除了分配服务以外，容错机制也是必不可少的功能。容错机制通过自动侦测、自动切换和自动恢复3个阶段完成。</p>
+<h4 id="自动侦测"><a href="#自动侦测" class="headerlink" title="自动侦测"></a>自动侦测</h4><p>通过判断服务节点的网络、负载等情况决定服务节点可用性。</p>
 <ol>
 <li>端口连通性<br>我们可以通过一个端口是否可连通作为节点是否可用的基本判断。</li>
 <li>服务可用<br>在大多数情况，端口连通并不一定可以提供服务。因此为了提高容错率，我们需要考虑服务可用性。可以添加一个特定的接口，用于返回服务是否可用，返回的指标有很多，比如服务的负载情况，服务所在服务器的负载情况等。<ul>
@@ -621,15 +621,15 @@
 </ul>
 </li>
 </ol>
-<h4><span id="自动切换">自动切换</span></h4><p>当自动侦测到某节点不可用时，则需要根据规则进行容灾处理，比如将服务节点从可用节点移除，发送预警通知等。</p>
-<h4><span id="自动恢复">自动恢复</span></h4><p>当侦测到服务可用时，可以自动进行注册到可用服务列表中。</p>
-<h2><span id="参考文献">参考文献</span></h2><ol>
+<h4 id="自动切换"><a href="#自动切换" class="headerlink" title="自动切换"></a>自动切换</h4><p>当自动侦测到某节点不可用时，则需要根据规则进行容灾处理，比如将服务节点从可用节点移除，发送预警通知等。</p>
+<h4 id="自动恢复"><a href="#自动恢复" class="headerlink" title="自动恢复"></a>自动恢复</h4><p>当侦测到服务可用时，可以自动进行注册到可用服务列表中。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li><a href="http://www.cnblogs.com/danbing/p/7459224.html" target="_blank" rel="noopener">负载均衡基础知识</a></li>
 <li><a href="https://blog.csdn.net/github_37515779/article/details/79953788" target="_blank" rel="noopener">高并发解决方案之一 ——负载均衡</a></li>
 <li><a href="https://www.jianshu.com/p/c91fe3f94e5c" target="_blank" rel="noopener">什么是负载均衡，为什么要做负载均衡？</a></li>
 <li><a href="https://www.jianshu.com/p/b67af78f1088" target="_blank" rel="noopener">浅析负载均衡的6种算法，Ngnix的5种算法</a></li>
 </ol>
-<p>[^1]: 杨卫华. 高可用架构·硅谷篇（第4期）.</p>
+<p>[^1]: 杨卫华. 高可用架构·硅谷篇（第4期）.  </p>
 
       
     </div>
@@ -788,7 +788,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -815,7 +815,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -856,7 +862,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">12</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -920,7 +932,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">单机系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">冷备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.</span> <span class="nav-text">热备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">DNS负载均衡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">硬件负载均衡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">软件负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.3.1.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.3.2.</span> <span class="nav-text">LVS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.3.3.</span> <span class="nav-text">HAProxy</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.3.</span> <span class="nav-text">负载均衡算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.4.</span> <span class="nav-text">负载均衡容错</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">自动侦测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.4.2.</span> <span class="nav-text">自动切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.4.3.</span> <span class="nav-text">自动恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.6.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统架构"><span class="nav-number">1.</span> <span class="nav-text">系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单机系统"><span class="nav-number">1.2.</span> <span class="nav-text">单机系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#冷备"><span class="nav-number">1.3.</span> <span class="nav-text">冷备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热备"><span class="nav-number">1.4.</span> <span class="nav-text">热备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">1.5.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.5.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">1.5.2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS负载均衡"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">DNS负载均衡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件负载均衡"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">硬件负载均衡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件负载均衡"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">软件负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Nginx"><span class="nav-number">1.5.2.3.1.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LVS"><span class="nav-number">1.5.2.3.2.</span> <span class="nav-text">LVS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HAProxy"><span class="nav-number">1.5.2.3.3.</span> <span class="nav-text">HAProxy</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡算法"><span class="nav-number">1.5.3.</span> <span class="nav-text">负载均衡算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡容错"><span class="nav-number">1.5.4.</span> <span class="nav-text">负载均衡容错</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自动侦测"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">自动侦测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自动切换"><span class="nav-number">1.5.4.2.</span> <span class="nav-text">自动切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自动恢复"><span class="nav-number">1.5.4.3.</span> <span class="nav-text">自动恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">1.6.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
             
 
           </div>
