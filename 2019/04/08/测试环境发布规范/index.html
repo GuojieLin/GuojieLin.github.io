@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="关于测试环境持续集成和持续部署流程规范说明。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-04-08T07:06:57.576Z">
+<meta property="og:updated_time" content="2019-04-18T01:19:09.565Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="测试环境发布规范V0.1">
 <meta name="twitter:description" content="关于测试环境持续集成和持续部署流程规范说明。">
@@ -261,7 +261,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">15</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">17</span></a>
 
   </li>
         
@@ -280,7 +280,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">8</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">6</span></a>
 
   </li>
         
@@ -299,7 +299,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">12</span></a>
 
   </li>
 
@@ -434,12 +434,24 @@
                 
               
 
-              <time title="创建时间：2019-04-08 13:41:00 / 修改时间：15:06:57" itemprop="dateCreated datePublished" datetime="2019-04-08T13:41:00+08:00">2019-04-08</time>
+              <time title="创建时间：2019-04-08 13:41:00" itemprop="dateCreated datePublished" datetime="2019-04-08T13:41:00+08:00">2019-04-08</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 09:19:09" itemprop="dateModified" datetime="2019-04-18T09:19:09+08:00">2019-04-18</time>
               
             
           </span>
@@ -514,7 +526,6 @@
 <li><a href="#自动化流程">自动化流程</a></li>
 </ul>
 </li>
-<li><a href="#自动化回滚">自动化回滚</a></li>
 </ul>
 <!-- tocstop -->
 <h2><span id="持续集成流程">持续集成流程</span></h2><pre class="mermaid">graph LR
@@ -556,21 +567,54 @@
 <li>人工执行数据库脚本。</li>
 <li>人工重启服务</li>
 </ol>
-<h2><span id="测试环境发布测试流程">测试环境发布测试流程</span></h2><p>针对首次在.net 直联引入CI(持续集成),CD(持续部署),现在测试环境对流程进行试验及合理化流程。</p>
+<h2><span id="测试环境发布测试流程">测试环境发布测试流程</span></h2><p>针对首次在 <code>.net小组</code>引入自动化流程(持续集成、持续部署),现在测试环境对流程进行试验及合理化流程。</p>
 <h3><span id="原始流程">原始流程</span></h3><ol>
-<li>开发编码本地测试通过打包</li>
-<li>开发根据配置修改编写配置修改文档</li>
-<li>开发编写数据库脚本</li>
-<li>将库包，配置修改文档和数据库脚本都上传到SVN的冲突包。</li>
-<li>通知测试，测试更新冲突包的dll，将源程序关闭。并复制新的库包到程序目录。</li>
-<li>根据配置修改文档修改配置。</li>
-<li>执行数据库脚本。</li>
-<li>启动程序进行测试。</li>
+<li>开发</li>
 </ol>
-<p>目前测试环境和开发环境是分开的，因此开发通过jenkins持续集成后将全量包上传致测试环境FTP。<br>测试人员通过开发给出的测试文档人工修改配置，通过开发给出的数据库脚本人工执行脚本。</p>
-<h3><span id="自动化流程">自动化流程</span></h3><h2><span id="自动化回滚">自动化回滚</span></h2><p>自动化回滚</p>
-<pre class="mermaid">graph TD
-    Start --> Stop</pre>
+<pre class="mermaid">graph LR
+    开发编码 --> 本地测试
+    本地测试 --通过--> 上传代码
+    上传代码 --> 编写配置修改文档
+    编写配置修改文档 --> 配置修改文档上传
+    配置修改文档上传 --> 库包上传
+    库包上传--> 测试人员测试
+    测试人员测试 --测试通过--> 发版
+    测试人员测试 --测试不通过--> 开发编码</pre>
+
+<p>2.测试</p>
+<pre class="mermaid">graph LR
+更新库包--> 测试环境库包备份
+测试环境库包备份 --> 升级程序
+升级程序--> 根据文档修改配置
+根据文档修改配置-->重启程序</pre>
+
+<ol>
+<li>开发人员编码本地测试通过后打包</li>
+<li>开发人员根据配置修改编写配置修改文档（包括配置修改和数据库脚本等）</li>
+<li>将库包、配置修改文档和数据库脚本都上传到SVN的冲突包。</li>
+<li>通知测试人员，测试更新的程序。</li>
+<li>测试人员备份源程序后升级程序。</li>
+<li>测试人员根据配置修改文档修改配置。</li>
+<li>测试人员执行数据库脚本。</li>
+<li>启动程序进行测试。</li>
+<li>测试通过后发版，同时开发人员将版本切出release分支备份代码。</li>
+</ol>
+<blockquote>
+<p>所有开发都在trunk上，一个版本开发完成后切除一个release分支,如有补丁包要发版，则在对应的release分支上切出一个branch分支。补丁包发版后将branch合并到trunk,新的版本需要重新测试合并后的代码。</p>
+</blockquote>
+<h3><span id="自动化流程">自动化流程</span></h3><ol>
+<li>自动化打包</li>
+</ol>
+<p>第一个阶段先将自动化打包融入到开发流程中，从原来手动进行冲突包合并并打包的工作交给jenkins进行处理。</p>
+<pre class="mermaid">graph LR
+    切出新版本分支--> 开发编码
+    开发编码 --> 本地测试
+    本地测试 --通过--> 上传代码
+    上传代码 --> 编写配置修改文档
+    编写配置修改文档 --> 配置修改文档上传
+    配置修改文档上传 --> 代码上传
+    代码上传 --> 执行jenkins编译
+    执行jenkins编译--> 上传到测试环境</pre>
       
     </div>
 
@@ -730,7 +774,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -746,10 +790,6 @@
                     
                   
                     
-                    
-                      
-                    
-                      
                     
                       
                     
@@ -810,7 +850,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -874,7 +918,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">持续集成流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">持续部署流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">测试环境发布测试流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text">原始流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text">自动化流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">自动化回滚</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">持续集成流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">持续部署流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">测试环境发布测试流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text">原始流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text">自动化流程</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -914,15 +958,9 @@
 </div>
 
 
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.1</div>
 
 
 

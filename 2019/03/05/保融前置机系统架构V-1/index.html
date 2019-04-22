@@ -266,7 +266,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">15</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">17</span></a>
 
   </li>
         
@@ -285,7 +285,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">8</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">6</span></a>
 
   </li>
         
@@ -304,7 +304,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">12</span></a>
 
   </li>
 
@@ -503,8 +503,8 @@
       
 
       
-        <h1 id="保融前置机系统架构"><a href="#保融前置机系统架构" class="headerlink" title="保融前置机系统架构"></a>保融前置机系统架构</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>企业和保融之前使用保融标准接口进行对接。为了减轻企业的开发压力。保融为企业开发了企业前置机，在前置机上进行签名、验签、加密、解密等功能。企业只需要根据接口文档生成报文与前置机对接即可，降低了企业对接开发工作量。</p>
-<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><table>
+        <h1><span id="保融前置机系统架构">保融前置机系统架构</span></h1><h2><span id="背景">背景</span></h2><p>企业和保融之前使用保融标准接口进行对接。为了减轻企业的开发压力。保融为企业开发了企业前置机，在前置机上进行签名、验签、加密、解密等功能。企业只需要根据接口文档生成报文与前置机对接即可，降低了企业对接开发工作量。</p>
+<h2><span id="名词解释">名词解释</span></h2><table>
 <thead>
 <tr>
 <th>名词</th>
@@ -522,34 +522,34 @@
 </tr>
 </tbody>
 </table>
-<h2 id="前置机系统架构"><a href="#前置机系统架构" class="headerlink" title="前置机系统架构"></a>前置机系统架构</h2><p><img src="/2019/03/05/保融前置机系统架构V-1/2019-03-07-14-46-22.png" alt></p>
+<h2><span id="前置机系统架构">前置机系统架构</span></h2><p><img src="//guojielin.github.io/2019/03/05/保融前置机系统架构V-1/2019-03-07-14-46-22.png" alt></p>
 <p>新版本前置机使用开源的NetMQ网络通讯框架,底层使用<code>异步IO</code>+<code>重叠模型</code>进行网络通信，极大增强了前置机网络通讯能力。同时，在网络异步通讯架构的基础上，线程模型也采用异步(非阻塞)模式处理，提升了线程利用率，提高了业务处理并发量。</p>
 <blockquote>
 <p>老版本已经逐渐淘汰使用，不再做详细的架构介绍。</p>
 </blockquote>
-<h2 id="保融前置机部署方案"><a href="#保融前置机部署方案" class="headerlink" title="保融前置机部署方案"></a>保融前置机部署方案</h2><p>由于前置机上需要进行签名验签等CPU密集型操作，因此主要在CPU处理上存在处理性能瓶颈，需要企业部署多台前置机进行水平扩展，同时可以解决前置机单点故障。</p>
+<h2><span id="保融前置机部署方案">保融前置机部署方案</span></h2><p>由于前置机上需要进行签名验签等CPU密集型操作，因此主要在CPU处理上存在处理性能瓶颈，需要企业部署多台前置机进行水平扩展，同时可以解决前置机单点故障。</p>
 <p>目前前置机有以下几种部署方案：</p>
 <ol>
 <li>双机冷备。</li>
 <li>双机热备。</li>
 </ol>
-<h3 id="双机冷备"><a href="#双机冷备" class="headerlink" title="双机冷备"></a>双机冷备</h3><p>双机冷备技术，部署备用服务，在2台(或多台)服务器运行的时候，当正在提供服务的这台服务器出现故障后，人工手动切换到另一台服务器，保障系统的可以继续运行服务。</p>
-<p><img src="/2019/03/05/保融前置机系统架构V-1/2749555-1G121151T21A.png" alt="2749555-1G121151T21A.png"></p>
+<h3><span id="双机冷备">双机冷备</span></h3><p>双机冷备技术，部署备用服务，在2台(或多台)服务器运行的时候，当正在提供服务的这台服务器出现故障后，人工手动切换到另一台服务器，保障系统的可以继续运行服务。</p>
+<p><img src="//guojielin.github.io/2019/03/05/保融前置机系统架构V-1/2749555-1G121151T21A.png" alt="2749555-1G121151T21A.png"></p>
 <p>老版本前置机由于存储了一些本地批次缓存信息，因此批量业务有以下限制，发送到哪台前置机做的交易就必须发送到该前置机进行查询。因此老版本由于数据无法共享，因此只能支持冷备。老版本前置机的冷备方案如下:</p>
 <ol>
 <li>前置机A挂掉后，企业关闭前置机A，人工将前置机A的批次信息文件拷贝到前置机B。</li>
 <li>启动前置机B,检查日志信息是否正常启动，且缓存文件正常加载。</li>
 <li>企业将交易切到前置机B。</li>
 </ol>
-<h3 id="双机热备"><a href="#双机热备" class="headerlink" title="双机热备"></a>双机热备</h3><p>双机热备特指基于高可用系统中的两台服务器的热备（或高可用），因两机高可用在国内使用较多，故得名双机热备，双机高可用按工作中的切换方式分为：主-备方式（Active-Standby方式）和双主机方式（Active-Active方式），主-备方式即指的是一台服务器处于某种业务的激活状态（即Active状态），另一台服务器处于该业务的备用状态（即Standby状态）。而双主机方式即指两种不同业务分别在两台服务器上互为主备状态（即Active-Standby和Standby-Active状态）。</p>
-<p><img src="/2019/03/05/保融前置机系统架构V-1/2749555-1G121151R5405.png" alt="2749555-1G121151R5405.png"></p>
+<h3><span id="双机热备">双机热备</span></h3><p>双机热备特指基于高可用系统中的两台服务器的热备（或高可用），因两机高可用在国内使用较多，故得名双机热备，双机高可用按工作中的切换方式分为：主-备方式（Active-Standby方式）和双主机方式（Active-Active方式），主-备方式即指的是一台服务器处于某种业务的激活状态（即Active状态），另一台服务器处于该业务的备用状态（即Standby状态）。而双主机方式即指两种不同业务分别在两台服务器上互为主备状态（即Active-Standby和Standby-Active状态）。</p>
+<p><img src="//guojielin.github.io/2019/03/05/保融前置机系统架构V-1/2749555-1G121151R5405.png" alt="2749555-1G121151R5405.png"></p>
 <p>　　故障隔离，简单的讲，高可用（热备）就是一种利用故障点转移的方式来保障业务连续性。其业务的恢复不是在原服务器，而是在备用服务器。热备不具有修复故障服务器的功能，而只是将故障隔离。</p>
 <p>新版本前置机不再存储批次信息到本地，将批次信息存储到保融后端，解决了前置机数据共享问题，因此支持双机热备方案。<br>企业可以同时部署多台保融前置机，通过负载均衡发送到前置机处理，同时前置机也通过负载均衡发送到保融后端服务。很好的解决了单点故障，同时也极大地提高了故障恢复(隔离)时间。</p>
-<p><img src="/2019/03/05/保融前置机系统架构V-1/2019-03-07-09-43-47.png" alt="2019-03-07-09-43-47.png"></p>
-<h3 id="保融后端服务集群"><a href="#保融后端服务集群" class="headerlink" title="保融后端服务集群"></a>保融后端服务集群</h3><p>保融目前通过在多个机房部署服务，满足企业从不通机房进行网络通讯，提高了通讯可靠性。<br>前置机目前支持人工配置多个后端服务地址，同时通过负载均衡算法分配保融后端服务节点。</p>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>目前前置机上采取加权轮询法，需要在前置机上配置地址集群各个服务的加权比重，在通过加权轮询算法获取后端服务地址。</p>
-<h3 id="加权轮询法"><a href="#加权轮询法" class="headerlink" title="加权轮询法"></a>加权轮询法</h3><p>加权轮询法是在轮询法的基础上添加加权比重配置。添加该配置之后可以根据服务器的不同处理能力，给每个前置机配置的后台地址分配不同的权值，使其能够根据相应权值数的发送服务请求。<br>同时为了提高连接可靠性，在保融后端服务节点A不通的情况下，我们会将节点A禁用，只用网络通畅的其他节点进行负载均衡，这样在前置机配置了后端服务集群的情况下能够极大的提高可靠性，当保融后端服务节点A连通时，前置机也能自动恢复和保融后端服务节点A之间的连接，仍然能自动分配给节点A。</p>
-<h3 id="最快响应法"><a href="#最快响应法" class="headerlink" title="最快响应法"></a>最快响应法</h3><p>最快响应在智能分配路由时起到了非常积极的作用。无论后台有多少可用节点，通过该算法都能智能的选择最快的节点。后续前置机可能会添加该算法进行更为智能的分配。</p>
+<p><img src="//guojielin.github.io/2019/03/05/保融前置机系统架构V-1/2019-03-07-09-43-47.png" alt="2019-03-07-09-43-47.png"></p>
+<h3><span id="保融后端服务集群">保融后端服务集群</span></h3><p>保融目前通过在多个机房部署服务，满足企业从不通机房进行网络通讯，提高了通讯可靠性。<br>前置机目前支持人工配置多个后端服务地址，同时通过负载均衡算法分配保融后端服务节点。</p>
+<h2><span id="负载均衡">负载均衡</span></h2><p>目前前置机上采取加权轮询法，需要在前置机上配置地址集群各个服务的加权比重，在通过加权轮询算法获取后端服务地址。</p>
+<h3><span id="加权轮询法">加权轮询法</span></h3><p>加权轮询法是在轮询法的基础上添加加权比重配置。添加该配置之后可以根据服务器的不同处理能力，给每个前置机配置的后台地址分配不同的权值，使其能够根据相应权值数的发送服务请求。<br>同时为了提高连接可靠性，在保融后端服务节点A不通的情况下，我们会将节点A禁用，只用网络通畅的其他节点进行负载均衡，这样在前置机配置了后端服务集群的情况下能够极大的提高可靠性，当保融后端服务节点A连通时，前置机也能自动恢复和保融后端服务节点A之间的连接，仍然能自动分配给节点A。</p>
+<h3><span id="最快响应法">最快响应法</span></h3><p>最快响应在智能分配路由时起到了非常积极的作用。无论后台有多少可用节点，通过该算法都能智能的选择最快的节点。后续前置机可能会添加该算法进行更为智能的分配。</p>
 
       
     </div>
@@ -706,7 +706,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -722,10 +722,6 @@
                     
                   
                     
-                    
-                      
-                    
-                      
                     
                       
                     
@@ -786,7 +782,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -850,7 +850,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#保融前置机系统架构"><span class="nav-number">1.</span> <span class="nav-text">保融前置机系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#名词解释"><span class="nav-number">1.2.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置机系统架构"><span class="nav-number">1.3.</span> <span class="nav-text">前置机系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保融前置机部署方案"><span class="nav-number">1.4.</span> <span class="nav-text">保融前置机部署方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#双机冷备"><span class="nav-number">1.4.1.</span> <span class="nav-text">双机冷备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双机热备"><span class="nav-number">1.4.2.</span> <span class="nav-text">双机热备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保融后端服务集群"><span class="nav-number">1.4.3.</span> <span class="nav-text">保融后端服务集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">1.5.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加权轮询法"><span class="nav-number">1.5.1.</span> <span class="nav-text">加权轮询法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最快响应法"><span class="nav-number">1.5.2.</span> <span class="nav-text">最快响应法</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">保融前置机系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">前置机系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.</span> <span class="nav-text">保融前置机部署方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.1.</span> <span class="nav-text">双机冷备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.2.</span> <span class="nav-text">双机热备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.3.</span> <span class="nav-text">保融后端服务集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.1.</span> <span class="nav-text">加权轮询法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.2.</span> <span class="nav-text">最快响应法</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -890,15 +890,9 @@
 </div>
 
 
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.1</div>
 
 
 
