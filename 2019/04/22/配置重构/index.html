@@ -105,7 +105,7 @@
 <meta property="og:description" content="本文对配置重构的优缺点进行总结，对配置重构产生的价值进行梳理。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://guojielin.github.io/2019/04/22/配置重构/2019-04-22-11-48-40.png">
-<meta property="og:updated_time" content="2019-04-22T12:41:35.759Z">
+<meta property="og:updated_time" content="2019-04-23T01:11:59.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="配置重构">
 <meta name="twitter:description" content="本文对配置重构的优缺点进行总结，对配置重构产生的价值进行梳理。">
@@ -436,12 +436,24 @@
                 
               
 
-              <time title="创建时间：2019-04-22 09:09:00 / 修改时间：20:41:35" itemprop="dateCreated datePublished" datetime="2019-04-22T09:09:00+08:00">2019-04-22</time>
+              <time title="创建时间：2019-04-22 09:09:00" itemprop="dateCreated datePublished" datetime="2019-04-22T09:09:00+08:00">2019-04-22</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 09:11:59" itemprop="dateModified" datetime="2019-04-23T09:11:59+08:00">2019-04-23</time>
               
             
           </span>
@@ -518,10 +530,11 @@
 </blockquote>
 <h3><span id="自动化">自动化</span></h3><p>目前二代已经开始使用自动化部署，而一代也已经在进行自动化的建设及试用。通过配置重构以后，充分的考虑到自动化的需求。最终实现一键部署，一键升级的能力。这其中都需要极为扎实的基础框架建设。</p>
 <h3><span id="动态迁移和扩容">动态迁移和扩容</span></h3><p>在微服务的架构之上实现服务的高可用。同时还需要实现服务动态扩容和动态迁移。程序和本地配置已经剥离开来，迁移程序无需在迁移配置或缓存信息。极大的降低了运维工作量。</p>
-<h3><span id="最终愿景">最终愿景</span></h3><p>搭建运维平台，降低配置管理工作量，降低程序升级和程序部署的工作量。</p>
+<h3><span id="最终愿景">最终愿景</span></h3><p>搭建运维平台，降低配置管理工作量，降低程序升级和程序部署的工作量，降低排查问题的复杂程度。</p>
 <ul>
 <li>配置管理：因为只保存了一份配置，因此更为容易的进行配置维护，同时根据需求拆分配置，解决目前配置全部堆积在一个配置文件所造成的一席列问题。</li>
 <li>服务管理：通过在持续集成和持续部署的基础之上，可视化进行服务管理。包括服务关闭、服务启动、服务重启、服务升级、服务回退等。同时也为服务部署、服务迁移和服务扩容提供了基础。通过“一键”部署，“一键”迁移极大的减轻当前运维人员碰到的运维痛点。</li>
+<li>日志管理：将日志汇总后，通过界面进行查看，查找。</li>
 </ul>
 <h4><span id="技术可行性">技术可行性</span></h4><ol>
 <li>配置管理可使用二代页面或重新开发，无技术难点。</li>
